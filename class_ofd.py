@@ -81,4 +81,3 @@ class OfdCashList:
     @property
     def cashes_list(self):
         return (rec for rec in self.__cashes_list)
-
