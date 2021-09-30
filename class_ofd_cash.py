@@ -61,7 +61,7 @@ class OfdCash:
             except Exception as E:
                 print(f'Ошибка записи данных по ККТ: {E}, содержимое буфера будет сохранено в файл: {dump}')
                 with open(dump, 'wb') as f:
-                    f.write(data.raw)
+                    f.write(data.text)
         else:
             try:
                 t = (data.json())
