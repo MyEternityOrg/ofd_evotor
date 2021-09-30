@@ -60,7 +60,7 @@ class OfdCash:
                                     (self.__date_stop, self.__reg_number))
             except Exception as E:
                 print(f'Ошибка записи данных по ККТ: {E}, содержимое буфера будет сохранено в файл: {dump}')
-                with open(dump, 'wb') as f:
+                with open(dump, 'w') as f:
                     f.write(data.text)
         else:
             try:
