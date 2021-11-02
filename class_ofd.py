@@ -29,6 +29,7 @@ class OfdCashList:
                 binary_data = class_mssql.MSSQLConnection.file_to_binary_data(file_name)
                 sql.execute("exec [ofd_process_import] %s, %s", ("import_cashlist", binary_data))
                 return sql.select("select * from [ofd_get_task] () order by id", "")
+                # return sql.select("select * from [ofd_get_task_2] ('0000030591007160') order by id", "")
         except Exception as E:
             print(f"Исключительная ситуация при записи списка касс в БД: {E}.")
             return ()
@@ -37,6 +38,7 @@ class OfdCashList:
         try:
             sql = class_mssql.MSSQLConnection(self.__settings_class)
             if sql.connected:
+                print('Подключение установлено. Обработка полученных данных.')
                 sql.execute("exec [ofd_process_shifts]")
         except Exception as E:
             print(f"Исключительная ситуация при обработке данных по сменам: {E}.")
