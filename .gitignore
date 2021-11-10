@@ -1,2 +1,4 @@
 /ofd_request.json
 /.idea/
+/*.dump
+/cashlist.xml

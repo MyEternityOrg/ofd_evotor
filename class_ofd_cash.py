@@ -27,7 +27,7 @@ class OfdCash:
             f'%2000:00:00&dateTo={self.__date_stop}%2023:59:59')
         req.load_default_headers(self.__settings_cls)
         data = req.get_data()
-        dump = class_settings.Settings.random_file_name_local()
+        dump = self.__reg_number + '_' + class_settings.Settings.random_file_name_local()
         if data.status_code == 200:
             try:
                 data_list = data.text
@@ -49,6 +49,8 @@ class OfdCash:
                             # sql.execute("insert into [import] ([packet_name], [packet_data]) values (%s, %s)",
                             #             ("import_cashdata_" + self.__reg_number, binary_data))
                             sql.execute("exec [ofd_process_import] %s, %s", ("import_cashdata", binary_data))
+                            with open(dump, 'wb') as f:
+                                f.write(binary_data)
                         except Exception as E:
                             print(f'Исключительная ситуация (import_cashdata): {E},'
                                   f' ошибка будет сохранена в файл: {dump}')
