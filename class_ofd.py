@@ -30,8 +30,8 @@ class OfdCashList:
                 sql.execute("exec [ofd_process_import] %s, %s", ("import_cashlist", binary_data))
                 with open('cashlist.xml', 'wb') as f:
                     f.write(binary_data)
-                # return sql.select("select * from [ofd_get_task] () order by id", "")
-                return sql.select("select * from [ofd_get_task_2] ('0005494123029456') order by id", "")
+                return sql.select("select * from [ofd_get_task] () order by id", "")
+                # return sql.select("select * from [ofd_get_task_2] ('0005494123029456') order by id", "")
         except Exception as E:
             print(f"Исключительная ситуация при записи списка касс в БД: {E}.")
             return ()

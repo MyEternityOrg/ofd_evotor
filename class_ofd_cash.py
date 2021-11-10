@@ -9,13 +9,22 @@ import class_settings
 # Автор модуля - Коржов С. (с) 2021
 class OfdCash:
 
-    def __init__(self, param, settings_cls):
+    def __init__(self, param, settings_cls, debug_mode=False):
+        self.__debug = debug_mode
         self.__reg_number = param['rn']
         self.__date_start = param['df']
         self.__date_stop = param['dt']
         self.__settings_cls = settings_cls
         if len(self.__reg_number) <= 0:
             Exception("Не переданы данные по ККТ!")
+
+    @property
+    def debug(self):
+        return self.__debug
+
+    @debug.setter
+    def debug(self, value):
+        self.__debug = value
 
     @staticmethod
     def create_date_time(m):
@@ -33,6 +42,9 @@ class OfdCash:
                 data_list = data.text
                 regex = re.compile(r'\s*(\d{4}[.]\d{2}[.]\d{2} (?:\d{2}[:]){2}\d{2}[/.]\d{3})\s*')
                 data_list = regex.sub(OfdCash.create_date_time, data_list)
+                # Иногда эвоторо присылает в массиве },,{ - мусор. Правим его.
+                regex_commas = re.compile('},,{')
+                data_list = regex_commas.sub('},{', data_list)
                 data_list = json.loads(data_list).get('documents')
                 print(
                     f"Для ККТ {self.__reg_number} ({self.__date_start} 00:00:00 - {self.__date_stop} 23:59:59): "
@@ -49,12 +61,13 @@ class OfdCash:
                             # sql.execute("insert into [import] ([packet_name], [packet_data]) values (%s, %s)",
                             #             ("import_cashdata_" + self.__reg_number, binary_data))
                             sql.execute("exec [ofd_process_import] %s, %s", ("import_cashdata", binary_data))
-                            with open(dump, 'wb') as f:
-                                f.write(binary_data)
+                            if self.__debug:
+                                with open(dump, 'wb') as f:
+                                    f.write(binary_data)
                         except Exception as E:
                             print(f'Исключительная ситуация (import_cashdata): {E},'
                                   f' ошибка будет сохранена в файл: {dump}')
-                            with open(dump, 'wb') as f:
+                            with open(dump + '.json', 'wb') as f:
                                 f.write(binary_data)
                     else:
                         # для пустых смен - можно смело двигать "метку времени".
@@ -62,7 +75,7 @@ class OfdCash:
                                     (self.__date_stop, self.__reg_number))
             except Exception as E:
                 print(f'Ошибка записи данных по ККТ: {E}, содержимое буфера будет сохранено в файл: {dump}')
-                with open(dump, 'w') as f:
+                with open(dump + '.json', 'w') as f:
                     f.write(data.text)
         else:
             try:
