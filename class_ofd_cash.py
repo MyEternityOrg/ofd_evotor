@@ -43,8 +43,7 @@ class OfdCash:
                 regex = re.compile(r'\s*(\d{4}[.]\d{2}[.]\d{2} (?:\d{2}[:]){2}\d{2}[/.]\d{3})\s*')
                 data_list = regex.sub(OfdCash.create_date_time, data_list)
                 # Иногда эвоторо присылает в массиве },,{ - мусор. Правим его.
-                regex_commas = re.compile('},,{')
-                data_list = regex_commas.sub('},{', data_list)
+                data_list = data_list.replace('},,{', '},{').replace('}{', '},{')
                 data_list = json.loads(data_list).get('documents')
                 print(
                     f"Для ККТ {self.__reg_number} ({self.__date_start} 00:00:00 - {self.__date_stop} 23:59:59): "
