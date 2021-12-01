@@ -28,10 +28,10 @@ class OfdCashList:
                 class_request.HttpRequest.write_data_to_xml(self.__cashes_list, file_name, "cashes")
                 binary_data = class_mssql.MSSQLConnection.file_to_binary_data(file_name)
                 sql.execute("exec [ofd_process_import] %s, %s", ("import_cashlist", binary_data))
-                with open('cashlist.xml', 'wb') as f:
-                    f.write(binary_data)
-                # return sql.select("select * from [ofd_get_task] () order by id", "")
-                return sql.select("select * from [ofd_get_task_2] ('0000856504003167') order by id", "")
+                # with open('cashlist.xml', 'wb') as f:
+                #     f.write(binary_data)
+                return sql.select("select * from [ofd_get_task_v2] () order by id", "")
+                # return sql.select("select * from [ofd_get_task_2] ('0005980156038248') order by id", "")
         except Exception as E:
             print(f"Исключительная ситуация при записи списка касс в БД: {E}.")
             return ()
