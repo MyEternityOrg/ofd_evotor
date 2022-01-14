@@ -16,8 +16,7 @@ class OfdCashList:
         self.__date_out_pattern = "%Y%m%d"
         self.__settings_class = settings_class
         self.__cashes_list = []
-        self.__initial_date = datetime.date(datetime.date.today().year, datetime.date.today().month - 1,
-                                            datetime.date.today().day)
+        self.__initial_date = datetime.datetime.now() - datetime.timedelta(days=30)
         self.__initial_date_str = self.__initial_date.strftime(self.__date_out_pattern)
 
     def write_data_to_sql(self):
