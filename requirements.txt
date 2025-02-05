@@ -1,2 +1,2 @@
 pymssql==2.2.11
-requests==2.31.0
+requests==2.32.2
